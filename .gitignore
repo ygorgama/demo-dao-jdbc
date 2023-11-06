@@ -25,4 +25,6 @@ replay_pid*
 
 # Eclipse settings
 .settings
+.metadata
+
 /bin/
