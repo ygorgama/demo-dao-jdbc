@@ -86,7 +86,7 @@ public class SellerDaoJDBC implements SellerDao{
 	}
 
 	@Override
-	public void deleteById(Seller obj) {
+	public void deleteById(int id) {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement(
@@ -94,7 +94,7 @@ public class SellerDaoJDBC implements SellerDao{
 					+ "WHERE Id = ?"
 					, Statement.RETURN_GENERATED_KEYS);
 			
-			st.setInt(1, obj.getId());
+			st.setInt(1, id);
 			st.executeUpdate();
 			
 		} catch (SQLException e) {
