@@ -16,11 +16,12 @@ public class Program {
 		Seller seller = sellerDao.findById(3);
 		Department department = new Department(2, null);
 		List<Seller> list = sellerDao.findAll();
-//		Seller newSeller = new Seller(9, "Romildo", "romildo@gmail.com", new Date(), 3000.00, department);
-//		sellerDao.update(newSeller);
-		seller = sellerDao.findById(1);
-		seller.setName("Martha Wayne");
-		sellerDao.update(seller);
+//		seller = sellerDao.findById(1);
+//		seller.setName("Martha Wayne");
+//		sellerDao.update(seller);
 		
+		seller = sellerDao.findById(8);
+		sellerDao.deleteById(seller);
+		System.out.println("Deleted element");
 	}
 }
