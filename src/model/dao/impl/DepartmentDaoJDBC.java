@@ -30,6 +30,7 @@ public class DepartmentDaoJDBC implements DepartmentDao{
 			
 			st.setString(1, obj.getName());
 			
+			
 			int rowsAffected = st.executeUpdate();
 			if (rowsAffected > 0) {
 				ResultSet rs = st.getGeneratedKeys();
@@ -56,10 +57,11 @@ public class DepartmentDaoJDBC implements DepartmentDao{
 			st = conn.prepareStatement(
 					"UPDATE department SET "
 					+ "Name = "
-					+ "(?)" , Statement.RETURN_GENERATED_KEYS
+					+ "(?)  WHERE Id = ?" , Statement.RETURN_GENERATED_KEYS
 			);
 			
 			st.setString(1, obj.getName());
+			st.setInt(2, obj.getId());
 			st.executeUpdate();
 			
 		} catch (SQLException e) {
@@ -70,18 +72,64 @@ public class DepartmentDaoJDBC implements DepartmentDao{
 		
 	}
 	@Override
-	public void deleteById(Department obj) {
-		// TODO Auto-generated method stub
+	public void deleteById(int id) {
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(
+					"DELETE FROM department "
+					+ "WHERE Id = "
+					+ "(?)" , Statement.RETURN_GENERATED_KEYS
+			);
+			
+			st.setInt(1, id);
+			int rowsAffecetds = st.executeUpdate();
+			
+			if (rowsAffecetds == 0) {
+				throw new DbException("Elemento does not exist");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			DB.closeStatement(st);
+		}
 		
 	}
 	@Override
 	public Department findById(Integer id) {
-		// TODO Auto-generated method stub
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			st = conn.prepareStatement(
+					"SELECT * FROM department "
+					+ "WHERE Id = "
+					+ "(?)"
+			);
+			 
+			st.setInt(1, id);
+			rs = st.executeQuery();
+			if (rs.next()) {
+				Department dep = instantiateDepartment(rs);
+				return dep;
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			DB.closeStatement(st);
+		}
 		return null;
 	}
 	@Override
 	public List<Department> findAll() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private Department instantiateDepartment(ResultSet rs) throws SQLException {
+		Department dep = new Department();
+		dep.setId(rs.getInt("Id")); 
+		dep.setName(rs.getString("Name"));
+		return dep;
 	}
 }
